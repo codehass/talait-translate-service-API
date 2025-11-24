@@ -15,7 +15,7 @@ from datetime import timedelta
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from .services.traduction_service import translate
-
+from .models.translation_model import TranslationResult
 
 load_dotenv()
 ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
@@ -85,14 +85,27 @@ def get_home():
 @app.post("/predict")
 async def get_prediction(
     req: TraductionRequest,
-    # user: dict = Depends(get_current_user),
+    user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
 
-    translation_text = translate(req.text, req.language)
-    translation_text = translation_text.get("translation_text")
+    translation_text = translate(req.text, req.language).get("translation_text")
 
-    return {
-        "text": req.text,
-        "language": req.language,
-        "translation_text": translation_text,  # Directly return translation_text
-    }
+    user_id = user.id
+    original_text = req.text
+    source_language = req.language.split("-")[0]
+    target_language = req.language.split("-")[1]
+
+    new_translation = TranslationResult(
+        user_id=user_id,
+        original_text=original_text,
+        translated_text=translation_text,
+        source_language=source_language,
+        target_language=target_language,
+    )
+
+    db.add(new_translation)
+    db.commit()
+    db.refresh(new_translation)
+
+    return new_translation
