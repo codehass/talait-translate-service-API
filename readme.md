@@ -26,7 +26,7 @@
 
 # 📖 Project title <a name="about-project"></a>
 
-Add a brief description of your project here
+This repository contains the backend for the TalAIt translation platform, built with FastAPI. The backend provides a secure API that handles translation requests, authenticates users, and interacts with the Hugging Face Inference API to translate text between French and English. The API includes endpoints for user registration, login (JWT generation), and the main translation function. The backend also handles errors like missing tokens, service unavailability, and invalid input formats, ensuring a robust and reliable service. The app is fully dockerized for easy internal deployment.
 
 ## 🛠 Built With <a name="built-with"></a>
 
@@ -41,10 +41,15 @@ Add a brief description of your project here
 
 ### Key Features <a name="key-features"></a>
 
-- **Feature one**
-- **Feature two**
-- **Feature three**
-- **Feature four**
+- **Secure API with JWT authentication**
+
+- **Integration with Hugging Face Inference API for translations (FR → EN / EN → FR)**
+
+- **Handles errors such as missing tokens and service disruptions**
+
+- **PostgreSQL database for user management**
+
+- **Fully dockerized for deployment**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
