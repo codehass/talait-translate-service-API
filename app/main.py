@@ -16,12 +16,13 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from .services.traduction_service import translate
 from .models.translation_model import TranslationResult
+from fastapi import Response
 
 load_dotenv()
 ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 
-app = FastAPI()
+app = FastAPI(title="TALAIT translate service API")
 
 origins = [FRONTEND_URL]
 app.add_middleware(
@@ -52,16 +53,18 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return db_user
 
 
-@app.post("/auth/login", response_model=TokenSchema)
-def login_for_access_token(
-    db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
+@app.post("/auth/login")
+async def login_for_access_token(
+    response: Response,
+    db: Session = Depends(get_db),
+    form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="INcorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
+            headers={"X-Authentication-Error": "Cookie not found or invalid"},
         )
 
     access_token_expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
@@ -69,7 +72,15 @@ def login_for_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=True,
+        samesite="Strict",
+        max_age=timedelta(hours=1),
+    )
+    return {"msg": "Login successful!"}
 
 
 @app.get("/users/me", response_model=UserSchema)
