@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from .authentication.auth import (
     get_password_hash,
@@ -81,6 +81,26 @@ async def login_for_access_token(
         max_age=timedelta(hours=1),
     )
     return {"msg": "Login successful!"}
+
+
+@app.post("/auth/logout")
+async def logout_user(response: Response):
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        secure=True,
+        samesite="Strict",
+        path="/",
+    )
+    return {"msg": "Logged out successfully!"}
+
+
+@app.get("/auth/me")
+async def get_auth(request: Request):
+    token = request.cookies.get("access_token")
+    if not token:
+        return {"authenticated": False}
+    return {"authenticated": True}
 
 
 @app.get("/users/me", response_model=UserSchema)
