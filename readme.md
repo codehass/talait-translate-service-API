@@ -24,19 +24,19 @@
 - [⭐️ Show your support](#support)
 - [📝 License](#license)
 
-# 📖 Project title <a name="about-project"></a>
+# 📖 KidLingo Translation Service - API <a name="about-project"></a>
 
-This repository contains the backend for the TalAIt translation platform, built with FastAPI. The backend provides a secure API that handles translation requests, authenticates users, and interacts with the Hugging Face Inference API to translate text between French and English. The API includes endpoints for user registration, login (JWT generation), and the main translation function. The backend also handles errors like missing tokens, service unavailability, and invalid input formats, ensuring a robust and reliable service. The app is fully dockerized for easy internal deployment.
+This repository contains the backend for the KidLingo translation platform, built with FastAPI. The backend provides a secure API that handles translation requests, authenticates users, and interacts with the Hugging Face Inference API to translate text between French and English. The API includes endpoints for user registration, login (JWT generation), and the main translation function. The backend also handles errors like missing tokens, service unavailability, and invalid input formats, ensuring a robust and reliable service. The app is fully dockerized for easy internal deployment.
 
 ## 🛠 Built With <a name="built-with"></a>
 
 ### Tech Stack <a name="tech-stack"></a>
 
   <ul>
-    <li><a href="https://nextjs.org/">Next.js</a></li>
-    <li><a href="https://www.tailwindcss.com/">Tailwind CSS</a></li>
-    <li><a href="https://styled-components.com/">Styled-components</a></li>
-    <li><a href="https://supabase.com/">Supabase</a></li>
+    <li><a href="https://fastapi.tiangolo.com/">FastAPI</a></li>
+    <li><a href="https://www.sqlalchemy.org/">SQLAlchemy</a></li>
+    <li><a href="https://www.postgresql.org/">PostgreSQL</a></li>
+    <li><a href="https://www.docker.com/">Docker</a></li>
   </ul>
 
 ### Key Features <a name="key-features"></a>
@@ -68,7 +68,7 @@ To get a local copy up and running, follow these steps.
 Clone this repository to your desired folder:
 
 ```sh
-  git clone git@github.com:codehass/front-end-next-template.git
+  git clone git@github.com:codehass/KidLingo-translate-service-API.git
 ```
 
 ### Install
@@ -76,8 +76,10 @@ Clone this repository to your desired folder:
 Install this project with:
 
 ```sh
-  cd front-end-next-template
-  npm install
+  cd KidLingo-translate-service-API
+  python -m venv venv
+  source venv/bin/activate
+  pip install -r requirements.txt
 ```
 
 create `.env` file and add your environment variables. You can copy `.env.example` as a template.
@@ -91,7 +93,7 @@ create `.env` file and add your environment variables. You can copy `.env.exampl
 To run the project, execute the following command:
 
 ```sh
-  npm run dev
+  uvicorn app.main:app --reload
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -108,10 +110,10 @@ To run the project, execute the following command:
 
 ## 🔭 Future Features <a name="future-features"></a>
 
-- **Feature one**
-- **Feature two**
-- **Feature three**
-- **Feature four**
+- **Rate limiting for translation endpoints**
+- **Support for additional languages**
+- **Translation history logging**
+- **Enhanced monitoring and analytics**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -119,13 +121,13 @@ To run the project, execute the following command:
 
 Contributions, issues, and feature requests are welcome!
 
-Feel free to check the [issues page](https://github.com/codehass/the-wild-oasis/issues).
+Feel free to check the [issues page](../../issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## ⭐️ Show your support <a name="support"></a>
 
-Join us in supporting our project to improve cabin management in hotels! Your help makes a big difference in making stays smoother and guests happier. Let's work together to bring positive change to the hospitality industry!
+Join us in supporting our project to improve cross-lingual communication with AI translations! Your help makes a big difference in bridging language gaps effortlessly. Let's work together to bring positive change to language accessibility!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
