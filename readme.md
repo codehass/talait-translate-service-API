@@ -68,7 +68,7 @@ To get a local copy up and running, follow these steps.
 Clone this repository to your desired folder:
 
 ```sh
-  git clone git@github.com:codehass/KidLingo-translate-service-API.git
+  git clone https://github.com/codehass/talait-translate-service-API.git
 ```
 
 ### Install
@@ -76,7 +76,7 @@ Clone this repository to your desired folder:
 Install this project with:
 
 ```sh
-  cd KidLingo-translate-service-API
+  cd talait-translate-service-API
   python -m venv venv
   source venv/bin/activate
   pip install -r requirements.txt
