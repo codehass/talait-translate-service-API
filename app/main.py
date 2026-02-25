@@ -1,28 +1,37 @@
 import os
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from datetime import timedelta
+
+from dotenv import load_dotenv
+from fastapi import Depends, FastAPI, HTTPException, Request, Response, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+
 from .authentication.auth import (
-    get_password_hash,
     authenticate_user,
     create_access_token,
     get_current_user,
+    get_password_hash,
 )
-from .schemas.user_schema import UserSchema, UserCreate, TokenSchema, TraductionRequest
-from .models.user_model import User
-from .db.database import engine, Base, get_db
-from fastapi.security import OAuth2PasswordRequestForm
-from datetime import timedelta
-from dotenv import load_dotenv
-from fastapi.middleware.cors import CORSMiddleware
-from .services.traduction_service import translate
+from .db.database import Base, engine, get_db
 from .models.translation_model import TranslationResult
-from fastapi import Response
+from .models.user_model import User
+from .schemas.user_schema import TraductionRequest, UserCreate, UserSchema
+from .services.traduction_service import translate
 
 load_dotenv()
 ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 
-app = FastAPI(title="TALAIT translate service API")
+app = FastAPI(
+    title="TalAIt Translation API",
+    description="""
+        This repository implements the backend for TalAIt's secure translation API, built using FastAPI. 
+        It handles user authentication (via JWT), integrates with Hugging Face Inference API for translation services, 
+        and provides a robust set of endpoints for managing text translations and user interactions.
+    """,
+    version="1.0.0",
+)
 
 origins = [FRONTEND_URL]
 app.add_middleware(
@@ -120,7 +129,15 @@ async def get_prediction(
     db: Session = Depends(get_db),
 ):
 
-    translation_text = translate(req.text, req.language).get("translation_text")
+    result = translate(req.text, req.language)
+
+    if "translation_text" not in result:
+        raise HTTPException(
+            status_code=400,
+            detail=result.get("error", "Translation failed"),
+        )
+
+    translation_text = result["translation_text"]
 
     user_id = user.id
     original_text = req.text
